@@ -1,0 +1,9 @@
+[submodule "aws-ils-be"]
+	path = aws-ils-be
+	url = https://github.com/weilunkoh/aws-ils-be
+[submodule "aws-ils-fe"]
+	path = aws-ils-fe
+	url = https://github.com/weilunkoh/aws-ils-fe
+[submodule "ils-experiments"]
+	path = ils-experiments
+	url = https://github.com/weilunkoh/ils-experiments
