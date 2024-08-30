@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  nginx-expose-1:
+    image: aws-ils/nginx:expose1
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.expose1
+  nginx-expose-3:
+    image: aws-ils/nginx:expose3
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.expose3

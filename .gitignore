@@ -1,0 +1,5 @@
+archive/
+reference/
+aws-ils-fe/.git/
+aws-ils-be/.git/
+.vscode/

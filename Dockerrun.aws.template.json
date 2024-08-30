@@ -1,0 +1,104 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "fe",
+      "hostname": "fe",
+      "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/fe:${PUSH_TAG}",
+      "essential": true,
+      "memory": 100
+    },
+    {
+      "name": "be",
+      "hostname": "be",
+      "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/be:${PUSH_TAG}",
+      "command": [
+        "gunicorn",
+        "--workers",
+        "1",
+        "--threads",
+        "4",
+        "-b",
+        "0.0.0.0:5000",
+        "app:app"
+      ],
+      "essential": true,
+      "memory": 700,
+      "environment": [
+        {
+          "name": "HOST_MSG",
+          "value": " Hosted on AWS as a Server-oriented Solution via Elastic Beanstalk"
+        },
+        {
+          "name": "BUCKET_AUTH",
+          "value": "smu-ils-auth"
+        },
+        {
+          "name": "BUCKET_MODEL",
+          "value": "smu-ils-model"
+        },
+        {
+          "name": "BUCKET_RECORDS",
+          "value": "smu-ils-records"
+        },
+        {
+          "name": "BUCKET_BACKGROUND",
+          "value": "smu-ils-background"
+        },
+        {
+          "name": "AWS_DEFAULT_REGION",
+          "value": "${AWS_DEFAULT_REGION}"
+        },
+        {
+          "name": "DEFAULT_PAGE_SIZE",
+          "value": "5"
+        },
+        {
+          "name": "NEW_CLASS_PERC_TOLERANCE",
+          "value": "0.15"
+        },
+        {
+          "name": "NEW_EXISTING_PERC_TOLERANCE",
+          "value": "0.15"
+        },
+        {
+          "name": "COS_SIM_PERC_THRESHOLD",
+          "value": "0.05"
+        },
+        {
+          "name": "TEXT_MODEL_HOST",
+          "value": "sagemaker"
+        },
+        {
+          "name": "TEXT_SAGEMAKER_ENDPOINT_NAME",
+          "value": "pytorch-inference-2024-01-10-09-34-42-078"
+        },
+        {
+          "name": "IMAGE_MODEL_HOST",
+          "value": "sagemaker"
+        },
+        {
+          "name": "IMAGE_SAGEMAKER_ENDPOINT_NAME",
+          "value": "pytorch-inference-2024-01-14-08-45-53-556"
+        }
+      ]
+    },
+    {
+      "name": "nginx",
+      "hostname": "nginx",
+      "links": [
+        "fe",
+        "be"
+      ],
+      "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/nginx:expose1",
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "memory": 100
+    }
+  ]
+}

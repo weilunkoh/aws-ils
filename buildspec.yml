@@ -1,0 +1,70 @@
+version: 0.2
+
+env:
+ variables:
+  PULL_TAG: 2.0.3
+  PUSH_TAG: 2.1.0
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      
+      # # Comment these two lines off if cache is not used.
+      - docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/fe:${PULL_TAG}
+      - docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/be:${PULL_TAG}
+
+  build:
+    commands:
+      # Download S3 bucket model files into aws-ils-be/models recursively (2.0.2 onwards doesn't use local models by default)
+      # - aws s3 cp s3://smu-ils-model/model/clip_image_feature_extractor aws-ils-be/model/clip_image_feature_extractor --recursive
+      # - aws s3 cp s3://smu-ils-model/model/clip_image_processor aws-ils-be/model/clip_image_processor --recursive
+      # - aws s3 cp s3://smu-ils-model/model/clip_text_feature_extractor aws-ils-be/model/clip_text_feature_extractor --recursive
+      # - aws s3 cp s3://smu-ils-model/model/clip_text_tokenizer aws-ils-be/model/clip_text_tokenizer --recursive
+
+      # For debugging
+      # - ls
+      # - ls aws-ils-fe
+      # - ls aws-ils-be
+      # - ls aws-ils-be/model
+
+      # For debugging
+      - cat Dockerrun.aws.template.json
+      - cat imagedefinitions.template.json
+      
+      # Update build artifacts template with version number tags
+      - envsubst < Dockerrun.aws.template.json > Dockerrun.aws.json
+      - envsubst < imagedefinitions.template.json > imagedefinitions.json
+
+      # For debugging
+      - cat Dockerrun.aws.json
+      - cat imagedefinitions.json
+
+      # For logging
+      - echo Build started on `date`
+      - echo Building the Docker image...
+
+      # This line is a one time thing to store the nginx images.
+      # - docker-compose --file=docker-compose-prod-all.yml build
+
+      # Subsequent pushes should use this line only.
+      - docker-compose --file=docker-compose-prod-apps.yml build
+  
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+
+      # The next line is a one time thing.
+      # - docker-compose --file=docker-compose-prod-all.yml push
+
+      # Subsequent pushes should use this line only.
+      - docker-compose --file=docker-compose-prod-apps.yml push
+
+artifacts:
+  files:
+    # For server-oriented Elastic Beanstalk
+    - 'Dockerrun.aws.json'
+    # For serverless Fargate
+    - 'imagedefinitions.json'

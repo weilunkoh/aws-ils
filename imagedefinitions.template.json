@@ -1,0 +1,14 @@
+[
+    {
+        "name": "fe",
+        "imageUri": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/fe:${PUSH_TAG}"
+    },
+    {
+        "name": "be",
+        "imageUri": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/be:${PUSH_TAG}"
+    },
+    {
+        "name": "nginx",
+        "imageUri": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/nginx:expose3"
+    }
+]

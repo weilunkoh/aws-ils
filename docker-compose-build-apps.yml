@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  fe: 
+    image: aws-ils/fe:${tag}
+    build: 
+      context: ./aws-ils-fe
+  be:
+    image: aws-ils/be:${tag}
+    build: 
+      context: ./aws-ils-be

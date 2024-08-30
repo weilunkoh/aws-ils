@@ -1,0 +1,66 @@
+[
+  {
+    "name": "fe",
+    "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/fe:${PUSH_TAG}",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 3000
+      }
+    ]
+  },
+  {
+    "name": "be",
+    "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/be:${PUSH_TAG}",
+    "command": [
+      "gunicorn",
+      "-w",
+      "1",
+      "-b",
+      "0.0.0.0:5000",
+      "app:app"
+    ],
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 5000
+      }
+    ],
+    "environment": [
+      {
+        "name": "HOST_MSG",
+        "value": " Hosted on AWS as a Serverless Solution via ECS Fargate"
+      },
+      {
+        "name": "BUCKET_AUTH",
+        "value": "smu-ils-auth"
+      },
+      {
+        "name": "BUCKET_MODEL",
+        "value": "smu-ils-model"
+      },
+      {
+        "name": "BUCKET_RECORDS",
+        "value": "smu-ils-records"
+      },
+      {
+        "name": "BUCKET_BACKGROUND",
+        "value": "smu-ils-background"
+      },
+      {
+        "name": "AWS_DEFAULT_REGION",
+        "value": "${AWS_DEFAULT_REGION}"
+      }
+    ]
+  },
+  {
+    "name": "nginx",
+    "image": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/nginx:expose3",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80
+      }
+    ]
+  }
+]

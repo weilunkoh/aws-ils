@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  fe:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/fe:${PUSH_TAG}
+    build:
+      context: ./aws-ils-fe
+      cache_from:
+        - ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/fe:${PULL_TAG}
+  be:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/be:${PUSH_TAG}
+    build:
+      context: ./aws-ils-be
+      cache_from:
+        - ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/be:${PULL_TAG}
+  nginx-expose-1:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/nginx:expose1
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.expose1
+      # cache_from:
+      #   - ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/nginx:${PULL_TAG}
+  nginx-expose-3:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/nginx:expose3
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.expose3
+      # cache_from:
+      #   - ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/nginx:${PULL_TAG}
+

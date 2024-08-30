@@ -1,0 +1,31 @@
+# To simulate Fargate deployment locally
+version: '3.8'
+
+services:
+  fe: 
+    image: aws-ils/fe:${tag}
+    container_name: fe
+    ports: 
+      - "3000:3000"
+  be:
+    image: aws-ils/be:${tag}
+    container_name: be
+    ports: 
+      - "5000:5000"
+    command: "gunicorn -w 1 -b 0.0.0.0:5000 app:app"
+    environment:
+     - HOST_MSG=Hosted Locally via Docker Containers on Port 3000
+  
+  # Note: nginx doesn't work in local set up because of
+  # DNS resolver issue. To find a fix later via Docker
+  # without modifying existing nginx codes since existing
+  # nginx codes work on AWS Fargate.
+  nginx: 
+    depends_on: 
+      - fe
+      - be
+    image: aws-ils/nginx:expose3
+    container_name: nginx
+    ports: 
+      - "80:80"
+      

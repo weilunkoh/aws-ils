@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  fe: 
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/fe:${PUSH_TAG}
+    build: 
+      context: ./aws-ils-fe
+      cache_from:
+        - ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/fe:${PULL_TAG}
+  be:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/be:${PUSH_TAG}
+    build: 
+      context: ./aws-ils-be
+      cache_from:
+        - ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/aws-ils/be:${PULL_TAG}
+      
